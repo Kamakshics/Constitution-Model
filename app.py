@@ -5,6 +5,11 @@ from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 import google.generativeai as genai
 import markdown
+import pytesseract
+from PIL import Image
+
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
 
 # Load API key
 load_dotenv()
@@ -98,6 +103,32 @@ def chat():
     chat_history.append({"role": "assistant", "content": reply_text})
 
     return jsonify({"reply": reply_text})
+
+@app.route("/ocr", methods=["GET", "POST"])
+def ocr_page():
+    text = ""
+    if request.method == "POST":
+        if "file" not in request.files:
+            return jsonify({"error": "No file uploaded"}), 400
+
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"error": "Empty filename"}), 400
+
+        # Open the image and extract text
+        img = Image.open(file)
+        text = pytesseract.image_to_string(img)
+
+        return jsonify({"ocr_text": text})
+
+    # For GET request, show a simple upload form
+    return '''
+        <h2>Upload an Image for OCR</h2>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*">
+            <input type="submit" value="Upload">
+        </form>
+    '''
 
 if __name__ == "__main__":
     app.run(debug=True)

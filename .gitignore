@@ -24,3 +24,4 @@ Thumbs.db
 
 # Bytecode
 *.py[cod]
+.env
