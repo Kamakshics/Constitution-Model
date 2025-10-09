@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR Demo</title>
+</head>
+<body>
+    <h1>OCR Upload Page</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <input type="submit" value="Upload">
+    </form>
+
+    {% if text %}
+    <h2>Extracted Text:</h2>
+    <textarea rows="10" cols="80">{{ text }}</textarea>
+    {% endif %}
+
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>
+
